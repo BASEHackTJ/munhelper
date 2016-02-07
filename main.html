@@ -1,1 +1,46 @@
 <!DOCTYPE html>
+<html>
+<head>
+<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+	<!-- jQuery library -->
+	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="script.js"></script>
+	<script type="text/javascript" src="firebase.js"></script>
+
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<style>
+		.form-group {
+			padding-left: 20%;
+			padding-right: 20%;
+		}
+	</style>
+</head>
+<body>
+<h1>
+
+<div id = "timer1"> </div>
+<div class="form-group">
+		<label for="usr">Speaking Time:</label>
+		<input type="text" class="form-control" id="tim" name="time">
+</div>
+<div class="form-group">
+		<label for="usr">Number of Speakers:</label>
+		<input type="text" class="form-control" id="num" name="numb">
+</div>
+<div class="form-group">
+		<a class="btn btn-primary" onclick="startCountown();" name="submit">Set Motion</a>
+	</div>
+<script src = "timer.js"> </script>
+<script>
+	function startCountdown() {
+		countdown("timer1", document.getElementsByName("time")[0].value, document.getElementsByName("numb")[0].value);
+	}
+</script>
+
+</h1>
+</body>
+</html>
