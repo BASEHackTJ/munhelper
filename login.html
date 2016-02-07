@@ -8,11 +8,48 @@
 	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="script.js"></script>
+	<script type="text/javascript" src="firebase.js"></script>
 
 	<!-- Latest compiled JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </head>
 <body>
+	<style>
+		.form-group {
+			padding-left: 20%;
+			padding-right: 20%;
+		}
+	</style>
+	<script>
+	function validEmail(email) {
+		var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		return re.test(email)
+	}
+
+	function login() {
+		var email = document.getElementsByName("email")[0].value
+		var pass = document.getElementsByName("password")[0].value
+		if (!validEmail(email)) {
+			window.alert("Please enter a valid email")
+			console.log("Invalid email")
+			return
+		}
+		else {
+			var firebase = new Firebase("https://munhelper.firebaseio.com/")
+			firebase.authWithPassword({
+  				email    : email,
+  				password : pass
+			}, function(error, authData) {
+  				if (error) {
+    				console.log("Login Failed!", error);
+  			} else {
+    			console.log("Authenticated successfully with payload:", authData);
+    			window.alert("Logged in!");
+  			}
+			});
+		}
+	}
+	</script>
 	<nav class="navbar navbar-default">
 	  <div class="container-fluid">
 		<!-- Brand and toggle get grouped for better mobile display -->
@@ -60,4 +97,15 @@
 		</div><!-- /.navbar-collapse -->
 	  </div><!-- /.container-fluid -->
 	</nav>
+	<div class="form-group">
+		<label for="usr">Email:</label>
+		<input type="text" class="form-control" id="eml" name="email">
+	</div>
+	<div class="form-group">
+		<label for="pwd">Password:</label>
+		<input type="password" class="form-control" id="pwd" name="password">
+	</div>
+	<div style="text-align: center;">
+		<a class="btn btn-primary" onclick="login();" name="submit">Log In</a>
+	</div>
 </body>

@@ -97,6 +97,7 @@
     				console.log("Error creating user:", error);
   				} else {
     				console.log("Successfully created user account with uid:", userData.uid);
+    				window.alert("Created account!")
   				}
 			});
 		}
@@ -117,25 +118,4 @@
 	<div style="text-align: center;">
 		<a class="btn btn-primary" onclick="createAccount();" name="submit">Create</a>
 	</div>
-	<?php
-		if (isset($_POST["submit"])) {
-			$email = $_POST["email"];
-			$password = $_POST["password"];
-			$confirm_password = $_POST["password-confirm"];
-
-			if (!$_POST["email"]) {
-				$errname = "Please enter your name";
-			}
-
-			if (!$_POST["email"] || !filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) {
-				$err = "Please enter a valid email address";
-			}
-			if (!($password == $confirm_password)) {
-				$err = "Passwords do not match";
-			}
-			if (!$err) {
-				$firebase = new \Firebase\FirebaseLib("https://munhelper.firebaseio.com/");
-			}
-		}
-	?>
 </body>
