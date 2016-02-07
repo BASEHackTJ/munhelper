@@ -83,6 +83,27 @@
   		<input type="password" class="form-control" id="pwd" name="password-confirm">
 	</div>
 	<div style="text-align: center;">
-		<a class="btn btn-primary" onclick="createAccount();">Create</a>
+		<a class="btn btn-primary" onclick="createAccount();" name="submit">Create</a>
 	</div>
+	<?php
+		if (isset($_POST["submit"])) {
+			$email = $_POST["email"];
+			$password = $_POST["password"];
+			$confirm_password = $_POST["password-confirm"];
+
+			if (!$_POST["email"]) {
+				$errname = "Please enter your name";
+			}
+
+			if (!$_POST["email"] || !filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) {
+            	$err = "Please enter a valid email address";
+        	}
+        	if (!($password == $confirm_password)) {
+        		$err = "Passwords do not match";
+        	}
+        	if (!$err) {
+        		$xdata = array($email, $password);
+        	}
+		}
+	?>
 </body>
