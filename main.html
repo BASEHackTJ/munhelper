@@ -8,7 +8,7 @@
 	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 	<script[] src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="script.js"></script>
-	<script src="https://cdn.firebase.com/js/client/2.4.0/firebase.js"></script>
+	<script type="text/javascript" src="firebase.js"></script>
 
 	<!-- Latest compiled JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
@@ -45,23 +45,16 @@
 	</div>
 <script src = "timer.js"> </script>
 <script>
-var count = 0;
-	function subtract(){
-		count--;
-		countdown("timer1",btnId, 0,document.getElementsByName("time")[0].value );
-	}
+var count = -1;
 	function startCountdown(btnId) {
-		 
+		 if(count== "-1")
 		count = document.getElementsByName("numb")[0].value;
 		
 			countdown("timer1",btnId, 0,document.getElementsByName("time")[0].value );
-
-			document.getElementById(btnId).onclick="subtract();";
 		
 		if(document.getElementsByName("time")[0].value != null)
 		{
  		document.getElementById(btnId).disabled  = true;
- 		
  		}
  		console.log(document.getElementById(btnId));
 	}
@@ -83,11 +76,12 @@ var count = 0;
         msLeft = endTime - (+new Date);
         if(count == 0)
         {
-        	element.innerHtml = "Done";
+        	element.innerHTML = "Done"
         }
         else if ( msLeft < 1000 ) {
-        	element.innerHTML = "Speakers Left: "+ count - ;
-			document.getElementById(btnId).disabled = false;
+        	element.innerHTML = "0:00";
+            document.getElementById(btnId).disabled = false;
+            count--; 
         } else {
             time = new Date( msLeft );
             hours = time.getUTCHours();
