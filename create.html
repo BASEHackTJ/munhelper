@@ -21,16 +21,16 @@
 </head>
 <body>
 <script>
-		$(document).ready(function() {
-			console.log("hello")
-			var dropdown = document.getElementsByName("acc-drop")[0];
-			var name = localStorage.getItem("email")
-			if (name == null || name.length == 0) {
-				name = "Account"
-			};
-			dropdown.appendChild(document.createTextNode(name));
-		});
-	</script>
+	$(document).ready(function() {
+		console.log("hello")
+		var dropdown = document.getElementsByName("acc-drop")[0];
+		var name = localStorage.getItem("email")
+		if (name == null || name.length == 0) {
+			name = "Account"
+		};
+		dropdown.appendChild(document.createTextNode(name));
+	});
+</script>
 	<nav class="navbar navbar-default">
 	  <div class="container-fluid">
 		<!-- Brand and toggle get grouped for better mobile display -->

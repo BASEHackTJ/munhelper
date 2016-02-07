@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<html>
 <head>
 	<title>MUN Helper</title>
 <!-- Latest compiled and minified CSS -->
@@ -9,6 +8,7 @@
 	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="script.js"></script>
+	<script src="https://cdn.firebase.com/js/client/2.4.0/firebase.js"></script>
 
 	<!-- Latest compiled JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
@@ -33,30 +33,29 @@
 <script src = "timer.js"> </script>
 <script>
 var count = -1;
-	function startCountdown(btnId) {
-		 if(count== "-1")
-		count = document.getElementsByName("numb")[0].value;
-		
-			countdown("timer1",btnId, 0,document.getElementsByName("time")[0].value );
-		
-		if(document.getElementsByName("time")[0].value != null)
-		{
- 		document.getElementById(btnId).disabled  = true;
- 		}
- 		console.log(document.getElementById(btnId));
-	}
-	function countdown( elementName, btnId, minutes, seconds )
+function startCountdown(btnId) {
+	 if(count== "-1")
+	count = document.getElementsByName("numb")[0].value;
+	
+		countdown("timer1",btnId, 0,document.getElementsByName("time")[0].value );
+	
+	if(document.getElementsByName("time")[0].value != null)
 	{
-    var element, endTime, hours, mins, msLeft, time;
-    console.log("check1");
-    console.log("elementName = " + elementName);
-    element = document.getElementById( elementName );
-    console.log("element = " + element);
-    console.log("check2");
-    function twoDigits( n )
-    {
-        return (n <= 9 ? "0" + n : n);
-    }
+		document.getElementById(btnId).disabled  = true;
+		}
+		console.log(document.getElementById(btnId));
+}
+	function countdown( elementName, btnId, minutes, seconds ) {
+	    var element, endTime, hours, mins, msLeft, time;
+	    console.log("check1");
+	    console.log("elementName = " + elementName);
+	    element = document.getElementById( elementName );
+	    console.log("element = " + element);
+	    console.log("check2");
+	    function twoDigits( n )
+	    {
+	        return (n <= 9 ? "0" + n : n);
+	    }
 
     function updateTimer()
     {
@@ -81,18 +80,76 @@ var count = -1;
     endTime = (+new Date) + 1000 * (60*minutes + seconds) + 500;
     updateTimer();
 }
-</script>
-<script>
-		$(document).ready(function() {
-			console.log("hello")
-			var dropdown = document.getElementsByName("acc-drop")[0];
-			var name = localStorage.getItem("email")
-			if (name == null || name.length == 0) {
-				name = "Account"
-			};
-			dropdown.appendChild(document.createTextNode(name));
+    var motions = 0
+
+	function createField() {
+		var firebase = new Firebase("https://munhelper.firebaseio.com/motions/" + localStorage.getItem("committee-name"));
+		var data = {}
+		data[motions] = document.getElementsByName("motion" + motions.toString())[0].value;
+		firebase.authWithPassword({
+  			"email": localStorage.getItem("email"),
+  			"password": localStorage.getItem("password")
+			}, function(error, authData) {
+  			if (error) {
+    			console.log("Login Failed!", error);
+  			} else {
+    			console.log("Authenticated successfully with payload:", authData);
+    			firebase.update(data, function(error) {
+  				if (error) {
+    				console.log('Synchronization failed');
+  				} else {
+    				console.log('Synchronization succeeded');
+    				motions += 1
+    				window.alert("Motion added")
+
+    				var listItem = document.createElement("li");
+    				listItem.className += "list-group-item"
+    				var input = document.createElement("input")
+					input.className += "form-control";
+					input.type = "text";
+					input.id = "cmt" + motions.toString();
+					input.name = "motion" + motions.toString();
+					listItem.appendChild(input);
+					var list = document.getElementsByName("motions-list")[0];
+					list.appendChild(listItem);
+  				}
 		});
-	</script>
+  			}
+		});
+}
+$(document).ready(function() {
+	var dropdown = document.getElementsByName("acc-drop")[0];
+	var name = localStorage.getItem("email")
+	if (name == null || name.length == 0) {
+		name = "Account"
+	};
+	dropdown.appendChild(document.createTextNode(name));
+
+	var firebase = new Firebase("https://munhelper.firebaseio.com/motions/ILMUNC");// + localStorage.getItem("committee-name"));
+	console.log(firebase)
+	console.log("hi")
+	var element = document.getElementsByName("motions-list")[0];
+	var firstText = document.getElementsByName("motion0")[0];
+	console.log("hello there")
+	firebase.orderByKey().once("value", function(snapshot) {
+		//element.removeChild(element.childNodes[0]);
+		console.log("loaded")
+		snapshot.forEach(function(data) {
+			console.log(data.val());
+			var listItem = document.createElement("li");
+			var input = document.createElement("input");
+			input.name = "motion" + motions.toString()
+			listItem.className += "list-group-item";
+			input.className += "form-control";
+			input.value = data.val();
+			listItem.appendChild(input);
+			element.insertBefore(listItem, element.childNodes[motions]);
+			motions += 1;
+			firstText.name = "motion" + motions.toString();
+		});
+	});
+});
+</script>
 <nav class="navbar navbar-default">
 	  <div class="container-fluid">
 		<!-- Brand and toggle get grouped for better mobile display -->
@@ -143,15 +200,6 @@ var count = -1;
 <h2>
 <div id = "timer1"> </div>
 </h2>
-<script>
-	function createField() {
-		var f = document.createElement("form");
-		f.setAttribute('method',"post");
-		f.setAttribute('action',"submit.php");
-		var create = document.getElementsByName("create")[0];
-		create.style.visibility="hidden";
-	}
-</script>
 <style type="text/css">
 		/* Some custom styles to beautify this example */
 		.demo-content{
@@ -169,9 +217,10 @@ var count = -1;
 	<div class="col-sm-6">
 		<div class="demo-content">
 			<label for="cmt">Motions:</label>
-			<input type="text" class="form-control" id="cmt" name="motion1" placeholder="Poland: 9 min 45 sec, Possible Solutions"><br>
-			<input type="text" class="form-control" id="cmt" name="motion2"><br>
-			<input type="text" class="form-control" id="cmt" name="motion3"><br>
+			<ul class="list-group" name="motions-list">
+				<li class="list-group-item"><input type="text" class="form-control" id="cmt0" name="motion0" placeholder="Poland: 9 min 45 sec, Possible Solutions"></li>
+			</ul>
+			<br>
 			<a class="btn btn-primary" onclick="createField();" name="create">Add a Motion</a>
 		</div>
 	</div>

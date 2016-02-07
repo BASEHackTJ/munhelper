@@ -6,9 +6,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 	<script>
 		$(document).ready(function() {
-			console.log("hello")
 			var firebase = new Firebase("https://munhelper.firebaseio.com/committee-names")
-			console.log("hello2")
 			var element = document.getElementsByName("committee-list")[0];
 			firebase.once("value", function(snapshot) {
 				console.log("loaded")
