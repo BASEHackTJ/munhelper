@@ -8,7 +8,7 @@
 	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="script.js"></script>
-	<script type="text/javascript" src="firebase.js"></script>
+	<script src="https://cdn.firebase.com/js/client/2.4.0/firebase.js"></script>
 
 	<!-- Latest compiled JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
@@ -30,7 +30,7 @@
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
 		  </button>
-		  <a class="navbar-brand" href="#">MunHelper</a>
+		  <a class="navbar-brand" href="#">MUN Helper</a>
 		</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
@@ -98,6 +98,7 @@
   				} else {
     				console.log("Successfully created user account with uid:", userData.uid);
     				window.alert("Created account!")
+    				window.location.replace("main.html");
   				}
 			});
 		}
