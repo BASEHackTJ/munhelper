@@ -53,6 +53,7 @@
 			}, function(error, authData) {
   				if (error) {
     				console.log("Login Failed!", error);
+    				window.alert("Login failed");
   			} else {
     			console.log("Authenticated successfully with payload:", authData);
     			localStorage.setItem("uid", '' + authData.auth.uid);

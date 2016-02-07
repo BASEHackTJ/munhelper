@@ -1,0 +1,23 @@
+var firebase = new Firebase("https://munhelper.firebaseio.com/motions/" + localStorage.getItem("committee-name"));
+	console.log(firebase)
+	console.log("hi")
+	var element = document.getElementsByName("motions-list")[0];
+	var firstText = document.getElementsByName("motion0")[0];
+	console.log("hello there")
+	firebase.orderByKey().once("value", function(snapshot) {
+		//element.removeChild(element.childNodes[0]);
+		console.log("loaded")
+		snapshot.forEach(function(data) {
+			console.log(data.val());
+			var listItem = document.createElement("li");
+			var input = document.createElement("input");
+			input.name = "motion" + motions.toString()
+			listItem.className += "list-group-item";
+			input.className += "form-control";
+			input.value = data.val();
+			listItem.appendChild(input);
+			element.insertBefore(listItem, element.childNodes[motions]);
+			motions += 1;
+			firstText.name = "motion" + motions.toString();
+		});
+	});

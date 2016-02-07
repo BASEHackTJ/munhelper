@@ -36,17 +36,21 @@
   			}
 		});
 		var uid = localStorage.getItem("uid")
+		console.log(uid)
 		var obj = {};
 		obj[uid] = true;
 		var toInvite = document.getElementsByName("cochairs")[0].value.split(", ");
+		console.log(toInvite)
 		var usersRef = new Firebase("https://munhelper.firebaseio.com/users")
 		if (toInvite.length > 0 && document.getElementsByName("cochairs")[0].value.length > 0) {
+			console.log("adding")
 			for (var i = 0; i < toInvite.length; i++) {
 				var name = ""
 				usersRef.orderByKey().equalTo(toInvite[i].replace(".", "_").replace("#", "_").replace("$", "_").replace("/", "_").replace("[", "_").replace(".", "]")).on("child_added", function(snapshot) {
-	  				name = snapshot.value()
+					console.log("val: " + snapshot.val())
+	  				name = snapshot.val()
+	  				obj[name] = true;
 				});
-				obj[name] = true;
 			};
 		}
 		console.log(obj)
@@ -55,7 +59,7 @@
     			console.log('Synchronization failed');
   			} else {
     			console.log('Synchronization succeeded');
-    			window.location.replace("committees.html")
+    			window.location.replace("rollcall.html");
   			}
 		});
 	}
@@ -130,6 +134,6 @@
 			<input type="text" class="form-control" id="ccr" name="cochairs" placeholder="Invite with email: example@mun.com, example@mun.com">
 		</div>
 		<br>
-		<a class="btn btn-primary" onclick="createSession();" name="create" href="main.html">Create</a>
+		<a class="btn btn-primary" onclick="createSession();" name="create">Create</a>
 	</div>
 </body>
