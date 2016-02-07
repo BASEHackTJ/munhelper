@@ -97,8 +97,18 @@
     				console.log("Error creating user:", error);
   				} else {
     				console.log("Successfully created user account with uid:", userData.uid);
+    				var ref = new Firebase("https://munhelper.firebaseio.com/users")
+    				var data = {};
+    				data[email.replace(".", "_").replace("#", "_").replace("$", "_").replace("/", "_").replace("[", "_").replace(".", "]")] = userData.uid;
+    				ref.update(data, function(error) {
+  						if (error) {
+    						console.log('Synchronization failed');
+  						} else {
+    						console.log('Synchronization succeeded');
+  						}
+					});
     				window.alert("Created account!")
-    				window.location.replace("main.html");
+    				window.location.replace("newcommittees.html");
   				}
 			});
 		}

@@ -2,49 +2,11 @@
 <head>
 	<title>MUN Helper</title>
 	<!-- Latest compiled and minified CSS -->
-	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-	<script>
-		$(document).ready(function() {
-			console.log("hello")
-			var firebase = new Firebase("https://munhelper.firebaseio.com/committee-names")
-			console.log("hello2")
-			var element = document.getElementsByName("committee-list")[0];
-			firebase.once("value", function(snapshot) {
-				console.log("loaded")
-  				snapshot.forEach(function(data) {
-    				console.log(data.key());
-    				var listItem = document.createElement("li");
-    				var anchor = document.createElement("a");
-					listItem.className += "list-group-item";
-					var node = document.createTextNode(data.key());
-					anchor.style.cursor = "pointer";
-					listItem.style.cursor = "pointer";
-					listItem.onclick = function() {
-						console.log(data.key());
-						localStorage.setItem("committee-name", data.key());
-						window.location.replace("main.html");
-					};
-					anchor.appendChild(node);
-					listItem.appendChild(anchor);
-					element.appendChild(listItem);
-  				});
-			});
-		});
-
-		function openCommittee(name) {
-			console.log(name);
-		}
-	</script>
-	<style>
-		.list-group {
-			padding-left: 20%;
-			padding-right: 20%;
-		}
-	</style>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 
 	<!-- jQuery library -->
+	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="script.js"></script>
 	<script src="https://cdn.firebase.com/js/client/2.4.0/firebase.js"></script>
 
@@ -52,6 +14,52 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </head>
 <body>
+	<style>
+		.form-group {
+			padding-left: 20%;
+			padding-right: 20%;
+		}
+	</style>
+	<script>
+	function createSession() {
+		var div = document.getElementsByName("committee-btn")[0];
+		var input = document.getElementsByName("committee")[0].value;
+		var committeesRef = new Firebase("https://munhelper.firebaseio.com/committees/" + input + "/users/");
+		var committeNames = new Firebase("https://munhelper.firebaseio.com/committee-names");
+		var newName = {};
+		newName[input] = input;
+		committeNames.update(newName, function(error) {
+  			if (error) {
+    			console.log('Synchronization failed');
+  			} else {
+    			console.log('Synchronization succeeded');
+  			}
+		});
+		var uid = localStorage.getItem("uid")
+		var obj = {};
+		obj[uid] = true;
+		var toInvite = document.getElementsByName("cochairs")[0].value.split(", ");
+		var usersRef = new Firebase("https://munhelper.firebaseio.com/users")
+		if (toInvite.length > 0 && document.getElementsByName("cochairs")[0].value.length > 0) {
+			for (var i = 0; i < toInvite.length; i++) {
+				var name = ""
+				usersRef.orderByKey().equalTo(toInvite[i].replace(".", "_").replace("#", "_").replace("$", "_").replace("/", "_").replace("[", "_").replace(".", "]")).on("child_added", function(snapshot) {
+	  				name = snapshot.value()
+				});
+				obj[name] = true;
+			};
+		}
+		console.log(obj)
+		committeesRef.update(obj, function(error) {
+  			if (error) {
+    			console.log('Synchronization failed');
+  			} else {
+    			console.log('Synchronization succeeded');
+    			window.location.replace("committees.html")
+  			}
+		});
+	}
+	</script>
 	<nav class="navbar navbar-default">
 	  <div class="container-fluid">
 		<!-- Brand and toggle get grouped for better mobile display -->
@@ -99,13 +107,18 @@
 		</div><!-- /.navbar-collapse -->
 	  </div><!-- /.container-fluid -->
 	</nav>
+	<br>
 	<div style="text-align: center;">
-		<!--button to go to new committees-->
-		<a class="btn btn-primary" href="newcommittees.html">Create a New Committee</a>
+		<h1>Create New Committee Session</h1>
+		<div class="form-group" name="committee-btn">
+			<label for="cmt">Committe Name:</label>
+			<input type="text" class="form-control" id="cmt" name="committee" placeholder="e.g. SOCHUM 2016">
+		</div>
+		<div class="form-group" name="chair-invite">
+			<label for="ccr">Co-Chairs:</label>
+			<input type="text" class="form-control" id="ccr" name="cochairs" placeholder="Invite with email: example@mun.com, example@mun.com">
+		</div>
 		<br>
-		<br>
-		<!--show existing committees-->
-		<ul class="list-group" name="committee-list" style="padding-left: 20%; padding-right: 20%\">
-		</ul>
+		<a class="btn btn-primary" onclick="createSession();" name="create" href="main.html">Create</a>
 	</div>
 </body>
