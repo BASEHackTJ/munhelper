@@ -11,6 +11,16 @@
 
 	<!-- Latest compiled JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<style>
+		/*.form-group {
+			padding-left: 20%;
+			padding-right: 20%;
+		}
+		.btn
+		{
+			border-radius: 0;
+		}*/
+	</style>
 </head>
 <body>
 	<nav class="navbar navbar-default">
@@ -60,10 +70,19 @@
 		</div><!-- /.navbar-collapse -->
 	  </div><!-- /.container-fluid -->
 	</nav>
+	<div class="form-group">
+		<label for="usr">Email:</label>
+		<input type="text" class="form-control" id="eml" name="email">
+	</div>
+	<div class="form-group">
+  		<label for="pwd">Password:</label>
+  		<input type="password" class="form-control" id="pwd" name="password">
+	</div>
+	<div class="form-group">
+  		<label for="pwd">Confirm Password:</label>
+  		<input type="password" class="form-control" id="pwd" name="password-confirm">
+	</div>
 	<div style="text-align: center;">
-		<h1>Welcome to MUNHelper!</h1><br><h4>Chairs, log in or create an account below.</h4>
-		<a class="btn btn-primary" href="login.html">Login</a>
-		<br><br>
-		<a class="btn btn-primary" href="create.html">Create Account</a>
+		<a class="btn btn-primary" onclick="createAccount();">Create</a>
 	</div>
 </body>
