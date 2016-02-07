@@ -8,9 +8,16 @@
 	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="script.js"></script>
+	<script type="text/javascript" src="firebase.js"></script>
 
 	<!-- Latest compiled JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<style>
+		.form-group {
+			padding-left: 20%;
+			padding-right: 20%;
+		}
+	</style>
 </head>
 <body>
 	<nav class="navbar navbar-default">
@@ -60,10 +67,75 @@
 		</div><!-- /.navbar-collapse -->
 	  </div><!-- /.container-fluid -->
 	</nav>
-	<div style="text-align: center;">
-		<h1>Welcome to MUNHelper!</h1><br><h4>Chairs, log in or create an account below.</h4>
-		<a class="btn btn-primary" href="login.html">Login</a>
-		<br><br>
-		<a class="btn btn-primary" href="create.html">Create Account</a>
+	<script>
+	function validEmail(email) {
+		var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		return re.test(email)
+	}
+
+	function createAccount() {
+		var email = document.getElementsByName("email")[0].value
+		var pass = document.getElementsByName("password")[0].value
+		var pass2 = document.getElementsByName("password-confirm")[0].value
+		if (!validEmail(email)) {
+			window.alert("Please enter a valid email")
+			console.log("Invalid email")
+			return
+		}
+		else if (pass !== pass2) {
+			window.alert("Passwords do not match")
+			console.log("unmatching passwords")
+			return
+		}
+		else {
+			var firebase = new Firebase("https://munhelper.firebaseio.com/")
+			firebase.createUser({
+  				email    : email,
+  				password : pass
+			}, function(error, userData) {
+  				if (error) {
+    				console.log("Error creating user:", error);
+  				} else {
+    				console.log("Successfully created user account with uid:", userData.uid);
+  				}
+			});
+		}
+	}
+	</script>
+	<div class="form-group">
+		<label for="usr">Email:</label>
+		<input type="text" class="form-control" id="eml" name="email">
 	</div>
+	<div class="form-group">
+		<label for="pwd">Password:</label>
+		<input type="password" class="form-control" id="pwd" name="password">
+	</div>
+	<div class="form-group">
+		<label for="pwd">Confirm Password:</label>
+		<input type="password" class="form-control" id="pwd" name="password-confirm">
+	</div>
+	<div style="text-align: center;">
+		<a class="btn btn-primary" onclick="createAccount();" name="submit">Create</a>
+	</div>
+	<?php
+		if (isset($_POST["submit"])) {
+			$email = $_POST["email"];
+			$password = $_POST["password"];
+			$confirm_password = $_POST["password-confirm"];
+
+			if (!$_POST["email"]) {
+				$errname = "Please enter your name";
+			}
+
+			if (!$_POST["email"] || !filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) {
+				$err = "Please enter a valid email address";
+			}
+			if (!($password == $confirm_password)) {
+				$err = "Passwords do not match";
+			}
+			if (!$err) {
+				$firebase = new \Firebase\FirebaseLib("https://munhelper.firebaseio.com/");
+			}
+		}
+	?>
 </body>
