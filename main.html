@@ -6,7 +6,7 @@
 
 	<!-- jQuery library -->
 	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+	<script[] src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="script.js"></script>
 	<script type="text/javascript" src="firebase.js"></script>
 
@@ -17,12 +17,18 @@
 			padding-left: 20%;
 			padding-right: 20%;
 		}
+		h2{
+		text-align: center;
+		font-size: 100px;
+
+		}
 	</style>
+
 </head>
 <body>
 <h1>
 
-<div id = "timer1"> </div>
+
 <div class="form-group">
 		<label for="usr">Speaking Time:</label>
 		<input type="text" class="form-control" id="tim" name="time">
@@ -31,16 +37,77 @@
 		<label for="usr">Number of Speakers:</label>
 		<input type="text" class="form-control" id="num" name="numb">
 </div>
+
+</script>
 <div class="form-group">
-		<a class="btn btn-primary" onclick="startCountdown();" name="submit">Set Motion</a>
+		<button class="btn btn-primary" id = "button1" onclick="startCountdown('button1');" name="submit">Set Motion</button>
+
 	</div>
 <script src = "timer.js"> </script>
 <script>
-	function startCountdown() {
-		countdown("timer1", document.getElementsByName("time")[0].value, document.getElementsByName("numb")[0].value);
+var count = 0;
+	function subtract(){
+		count--;
+		countdown("timer1",btnId, 0,document.getElementsByName("time")[0].value );
 	}
+	function startCountdown(btnId) {
+		 
+		count = document.getElementsByName("numb")[0].value;
+		
+			countdown("timer1",btnId, 0,document.getElementsByName("time")[0].value );
+
+			document.getElementById(btnId).onclick="subtract();";
+		
+		if(document.getElementsByName("time")[0].value != null)
+		{
+ 		document.getElementById(btnId).disabled  = true;
+ 		
+ 		}
+ 		console.log(document.getElementById(btnId));
+	}
+	function countdown( elementName, btnId, minutes, seconds )
+{
+    var element, endTime, hours, mins, msLeft, time;
+    console.log("check1");
+    console.log("elementName = " + elementName);
+    element = document.getElementById( elementName );
+    console.log("element = " + element);
+    console.log("check2");
+    function twoDigits( n )
+    {
+        return (n <= 9 ? "0" + n : n);
+    }
+
+    function updateTimer()
+    {
+        msLeft = endTime - (+new Date);
+        if(count == 0)
+        {
+        	element.innerHtml = "Done";
+        }
+        else if ( msLeft < 1000 ) {
+        	element.innerHTML = "Speakers Left: "+ count - ;
+			document.getElementById(btnId).disabled = false;
+        } else {
+            time = new Date( msLeft );
+            hours = time.getUTCHours();
+            mins = time.getUTCMinutes();
+             element.innerHTML = (hours ? hours + ':' + twoDigits( mins ) : mins) + ':' + twoDigits( time.getUTCSeconds() );
+            setTimeout( updateTimer, time.getUTCMilliseconds() + 500 );
+        }
+    }
+
+    endTime = (+new Date) + 1000 * (60*minutes + seconds) + 500;
+    updateTimer();
+}
+
+
 </script>
 
 </h1>
+
+<h2>
+<div id = "timer1"> </div>
+</h2>
 </body>
 </html>
