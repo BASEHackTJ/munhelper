@@ -8,11 +8,35 @@
 	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="script.js"></script>
+	<script src="https://cdn.firebase.com/js/client/2.4.0/firebase.js"></script>
 
 	<!-- Latest compiled JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </head>
 <body>
+	<style>
+		.form-group {
+			padding-left: 20%;
+			padding-right: 20%;
+		}
+	</style>
+	<script>
+	function createSession() {
+		var div = document.getElementsByName("committee-btn")[0];
+		var input = document.getElementsByName("committee")[0].value;
+		var committeesRef = new Firebase("https://munhelper.firebaseio.com/committees/" + input + "/users/");
+		var uid = localStorage.getItem("uid")
+		var obj = {};
+		obj[uid] = true
+		committeesRef.update(obj, function(error) {
+  			if (error) {
+    			console.log('Synchronization failed');
+  			} else {
+    			console.log('Synchronization succeeded');
+  			}
+		});
+	}
+	</script>
 	<nav class="navbar navbar-default">
 	  <div class="container-fluid">
 		<!-- Brand and toggle get grouped for better mobile display -->
@@ -60,10 +84,14 @@
 		</div><!-- /.navbar-collapse -->
 	  </div><!-- /.container-fluid -->
 	</nav>
+	<br>
 	<div style="text-align: center;">
-		<h1>Welcome to MUNHelper!</h1><br><h4>Chairs, log in or create an account below.</h4>
-		<a class="btn btn-primary" href="login.html">Login</a>
-		<br><br>
-		<a class="btn btn-primary" href="create.html">Create Account</a>
+		<h1>Create New Committee Session</h1>
+		<div class="form-group" name="committee-btn">
+			<label for="cmt">Committe Name:</label>
+			<input type="text" class="form-control" id="cmt" name="committee">
+		</div>
+		<br>
+		<a class="btn btn-primary" onclick="createSession();" name="create">Create</a>
 	</div>
 </body>
