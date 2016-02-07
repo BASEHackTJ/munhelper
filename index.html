@@ -13,17 +13,6 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </head>
 <body>
-	<script>
-		$(document).ready(function() {
-			console.log("hello")
-			var dropdown = document.getElementsByName("acc-drop")[0];
-			var name = localStorage.getItem("email")
-			if (name == null || name.length == 0) {
-				name = "Account"
-			};
-			dropdown.appendChild(document.createTextNode(name));
-		});
-	</script>
 	<nav class="navbar navbar-default">
 	  <div class="container-fluid">
 		<!-- Brand and toggle get grouped for better mobile display -->
@@ -34,13 +23,13 @@
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
 		  </button>
-		  <a class="navbar-brand" href="#">MUN Helper</a>
+		  <a class="navbar-brand" href="index.html">MUN Helper</a>
 		</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		  <ul class="nav navbar-nav">
-			<li class="active"><a href="committees.html">Committees<span class="sr-only">(current)</span></a></li>
+			<li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
 			<li><a href="#">Link</a></li>
 			<li class="dropdown">
 			  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
@@ -58,7 +47,7 @@
 		  <ul class="nav navbar-nav navbar-right">
 			<li><a href="#">Link</a></li>
 			<li class="dropdown">
-			  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" name="acc-drop"><span class="caret"></span></a>
+			  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
 			  <ul class="dropdown-menu">
 				<li><a href="#">Action</a></li>
 				<li><a href="#">Another action</a></li>
@@ -72,7 +61,6 @@
 	  </div><!-- /.container-fluid -->
 	</nav>
 	<div style="text-align: center;">
-	<img src="UNIMG.png" alt="" style="width:304px;height:228px;">
 		<h1>Welcome to MUNHelper!</h1><br><h4>Chairs, log in or create an account below.</h4>
 		<a class="btn btn-primary" href="login.html">Login</a>
 		<br><br>
