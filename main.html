@@ -13,9 +13,13 @@
 	<!-- Latest compiled JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 	<style>
-		.form-group {
-			padding-left: 20%;
-			padding-right: 20%;
+		.align_right {
+			position: relative;
+			padding-right: 10%;
+		}
+		.align_left{
+			position: relative;
+			padding-left: 10%;
 		}
 		h2{
 		text-align: center;
@@ -28,18 +32,17 @@
 <body>
 <h1>
 
-
-<div class="form-group">
+<div class="align_right">
 		<label for="usr">Speaking Time:</label>
-		<input type="text" class="form-control" id="tim" name="time">
+		<input type="text" class="form-control" id="tim" name="time" placeholder = "(In Seconds)">
 </div>
-<div class="form-group">
+<div class="align_right">
 		<label for="usr">Number of Speakers:</label>
-		<input type="text" class="form-control" id="num" name="numb">
+		<input type="text" class="form-control" id="num" name="numb" placeholder = "(9/45 = 12 speakers)">
 </div>
 
 </script>
-<div class="form-group">
+<div class="align_right">
 		<button class="btn btn-primary" id = "button1" onclick="startCountdown('button1');" name="submit">Set Motion</button>
 
 	</div>
@@ -103,5 +106,21 @@ var count = -1;
 <h2>
 <div id = "timer1"> </div>
 </h2>
+<script>
+	function createField() {
+		var f = document.createElement("form");
+		f.setAttribute('method',"post");
+		f.setAttribute('action',"submit.php");
+		var create = document.getElementsByName("create")[0];
+		create.style.visibility="hidden";
+	}
+</script>
+<div class="align_left" id="motions" float: left;>
+	<label for="cmt">Motions:</label>
+	<input type="text" class="form-control" id="cmt" name="motion1" placeholder="Poland: 9 min 45 sec, Possible Solutions"><br>
+	<input type="text" class="form-control" id="cmt" name="motion2"><br>
+	<input type="text" class="form-control" id="cmt" name="motion3"><br>
+	<a class="btn btn-primary" onclick="createField();" name="create">Add a Motion</a>
+</div>
 </body>
 </html>
