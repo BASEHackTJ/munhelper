@@ -36,6 +36,17 @@
 			console.log(name);
 		}
 	</script>
+	<script>
+		$(document).ready(function() {
+			console.log("hello")
+			var dropdown = document.getElementsByName("acc-drop")[0];
+			var name = localStorage.getItem("email")
+			if (name == null || name.length == 0) {
+				name = "Account"
+			};
+			dropdown.appendChild(document.createTextNode(name));
+		});
+	</script>
 	<style>
 		.list-group {
 			padding-left: 20%;
@@ -86,7 +97,7 @@
 		  <ul class="nav navbar-nav navbar-right">
 			<li><a href="#">Link</a></li>
 			<li class="dropdown">
-			  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+			  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" name="acc-drop"><span class="caret"></span></a>
 			  <ul class="dropdown-menu">
 				<li><a href="#">Action</a></li>
 				<li><a href="#">Another action</a></li>
