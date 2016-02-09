@@ -31,11 +31,11 @@
 		var newName = {};
 		newName[input] = input;
 		committeNames.update(newName, function(error) {
-  			if (error) {
-    			console.log('Synchronization failed');
-  			} else {
-    			console.log('Synchronization succeeded');
-  			}
+			if (error) {
+				console.log('Synchronization failed');
+			} else {
+				console.log('Synchronization succeeded');
+			}
 		});
 		var uid = localStorage.getItem("uid")
 		console.log(uid)
@@ -46,24 +46,40 @@
 		var usersRef = new Firebase("https://munhelper.firebaseio.com/users")
 		if (toInvite.length > 0 && document.getElementsByName("cochairs")[0].value.length > 0) {
 			console.log("adding")
-			for (var i = 0; i < toInvite.length; i++) {
-				var name = ""
-				usersRef.orderByKey().equalTo(toInvite[i].replace(".", "_").replace("#", "_").replace("$", "_").replace("/", "_").replace("[", "_").replace(".", "]")).on("child_added", function(snapshot) {
-					console.log("val: " + snapshot.val())
-	  				name = snapshot.val()
-	  				obj[name] = true;
+			if (toInvite.length == 0) {
+				committeesRef.update(obj, function(error) {
+					if (error) {
+						console.log('Synchronization failed');
+					} else {
+						console.log('Synchronization succeeded');
+						window.location.replace("rollcall.html");
+					}
 				});
-			};
+			}
+			else {
+				for (var i = 0; i < toInvite.length; i++) {
+					var name = ""
+					var email = toInvite[i].replace(".", "_").replace("#", "_").replace("$", "_").replace("/", "_").replace("[", "_").replace(".", "]")
+					console.log("Email: " + email);
+					usersRef.child(email)./*orderByKey().equalTo(email).*/sonce("value", function(snapshot) {
+							console.log("key: " + snapshot.key())
+							console.log("val: " + snapshot.val())
+							name = snapshot.val()
+							obj[name] = true;
+							console.log("Updating object: " + obj)
+							committeesRef.update(obj, function(error) {
+								if (error) {
+									console.log('Synchronization failed');
+								} else {
+									console.log('Synchronization succeeded');
+									window.location.replace("rollcall.html");
+								}
+							});
+						});
+				};
+			}
 		}
 		console.log(obj)
-		committeesRef.update(obj, function(error) {
-  			if (error) {
-    			console.log('Synchronization failed');
-  			} else {
-    			console.log('Synchronization succeeded');
-    			window.location.replace("rollcall.html");
-  			}
-		});
 	}
 	</script>
 	<script>
