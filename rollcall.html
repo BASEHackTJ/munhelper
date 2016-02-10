@@ -16,61 +16,75 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </head>
 <body>
-<style>
-	h1{
-		padding-right: 10%;
-		padding-left: 10%;
-	}
-	.list-group{
-		padding-right: 20%;
-		padding-left: 20%;
-	}
-	.btn-primary{
-		padding-left: 10%;
-		padding-right: 10%;
-	}
-</style>
-<h1>
-Add Countries or Members that will be attending the conference. This will be used for roll call in committee sessions.
-</h1>
-<script>
-function createCountry() {
-	var listItem = document.createElement("li");
-	listItem.className += "list-group-item"
-	var input = document.createElement("input")
-	input.className += "form-control";
-	input.type = "text";
-	input.id = "cmt";
-	input.name = "speaker"
-	listItem.appendChild(input);
-	var list = document.getElementsByName("countries-list")[0];
-	list.appendChild(listItem);
-}
+	<style>
+		h1{
+			padding-right: 10%;
+			padding-left: 10%;
+		}
+		.list-group{
+			padding-right: 20%;
+			padding-left: 20%;
+		}
+		.btn-primary{
+			padding-left: 10%;
+			padding-right: 10%;
+		}
+	</style>
+	<h1>
+		Add Countries or Members that will be attending the conference. This will be used for roll call in committee sessions.
+	</h1>
+	<script>
+		function createCountry() {
+			var listItem = document.createElement("li");
+			listItem.className += "list-group-item"
+			var input = document.createElement("input")
+			input.className += "form-control country-name-textbox";
+			input.type = "text";
+			input.id = "cmt";
+			input.name = "speaker"
+			listItem.appendChild(input);
+			var list = document.getElementsByName("countries-list")[0];
+			list.appendChild(listItem);
+		}
 
-function createRollCall() {
-	var firebase = new Firebase("https://munhelper.firebaseio.com/roll-call/" + localStorage.getItem("committee-name"))
-	var countries = document.getElementsByName("speaker");
-	var data = {}
-	for (var i = 0; i < countries.length - 1; i++) {
-		data[i] = countries[i].value;
-	};
-	firebase.update(data, function(error) {
-  			if (error) {
-    			console.log('Synchronization failed');
-  			} else {
-    			console.log('Synchronization succeeded');
-  			}
-		});
-}
-</script>
+		function createRollCall() {
+			var firebase = new Firebase("https://munhelper.firebaseio.com/motion-speakers/" + localStorage.getItem("committee-name"))
+			var countries = document.getElementsByClassName("country-name-textbox");
+			console.log("elements: " + countries[0] + " " + countries[1])
+			var data = {}
+			for (var i = 0; i < countries.length - 1; i++) {
+				data[i] = countries[i].value;
+			};
+			console.log(data)
+			firebase.authWithPassword({
+				email    : localStorage.getItem("email"),
+				password : localStorage.getItem("password")
+			}, function(error, authData) {
+				if (error) {
+					console.log("Login Failed!", error);
+					window.alert("Login failed");
+				} else {
+					console.log("Authenticated successfully with payload:", authData);
+					firebase.update(data, function(error) {
+						if (error) {
+							console.log('Synchronization failed');
+						} else {
+							console.log('Synchronization succeeded');
+							window.location.replace("main.html");
+						}
+					});
+				}
+			});
+		}
+	</script>
 
-			<ul class="list-group" name="countries-list">
-				<li class="list-group-item"><input type="text" class="form-control" id="cmt0" name="speaker" placeholder="Poland"></li>
-			</ul>
-			<br>
-			<div style="text-align: center;">
-			<a class="btn btn-primary" onclick="createCountry();" name="create">Add a Country</a>
-			<a class="btn btn-primary" onclick="createRollCall()" href="main.html" name="submit">Submit</a>
-			</div>
+	<ul class="list-group" name="countries-list">
+		<li class="list-group-item"><input type="text" class="form-control country-name-textbox" id="cmt" name="speaker" placeholder="Poland"></li>
+	</ul>
+	<br>
+	<div style="text-align: center;">
+		<a class="btn btn-primary" onclick="createCountry();" name="create">Add a Country</a>
+		<a class="btn btn-primary" onclick="createRollCall();" name="submit">Submit</a>
+	</div>
 </body>
 </html>

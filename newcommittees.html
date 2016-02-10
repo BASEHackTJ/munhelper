@@ -26,6 +26,7 @@
 	function createSession() {
 		var div = document.getElementsByName("committee-btn")[0];
 		var input = document.getElementsByName("committee")[0].value;
+		localStorage.setItem("committee-name", input);
 		var committeesRef = new Firebase("https://munhelper.firebaseio.com/committees/" + input + "/users/");
 		var committeNames = new Firebase("https://munhelper.firebaseio.com/committee-names");
 		var newName = {};
@@ -61,7 +62,7 @@
 					var name = ""
 					var email = toInvite[i].replace(".", "_").replace("#", "_").replace("$", "_").replace("/", "_").replace("[", "_").replace(".", "]")
 					console.log("Email: " + email);
-					usersRef.child(email)./*orderByKey().equalTo(email).*/sonce("value", function(snapshot) {
+					usersRef.child(email)./*orderByKey().equalTo(email).*/once("value", function(snapshot) {
 							console.log("key: " + snapshot.key())
 							console.log("val: " + snapshot.val())
 							name = snapshot.val()
