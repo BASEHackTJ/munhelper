@@ -56,7 +56,7 @@
 				data[i] = countries[i].value;
 			};
 			console.log(data)
-			firebase.authWithPassword({
+			/*firebase.authWithPassword({
 				email    : localStorage.getItem("email"),
 				password : localStorage.getItem("password")
 			}, function(error, authData) {
@@ -64,7 +64,7 @@
 					console.log("Login Failed!", error);
 					window.alert("Login failed");
 				} else {
-					console.log("Authenticated successfully with payload:", authData);
+					console.log("Authenticated successfully with payload:", authData);*/
 					firebase.update(data, function(error) {
 						if (error) {
 							console.log('Synchronization failed');
@@ -73,8 +73,8 @@
 							window.location.replace("main.html");
 						}
 					});
-				}
-			});
+				//}
+			//});
 		}
 	</script>
 
