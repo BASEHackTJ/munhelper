@@ -32,21 +32,33 @@
 
 </head>
 <body>
-<script src = "timer.js"> </script>
+
 <script>
+var timeoutHandle = null;
 var count = -1;
-function startCountdown(btnId) {
-	 if(count== "-1")
-	count = document.getElementsByName("numb")[0].value;
+	function reset(btnId)
+	{
+		window.clearTimeout(timeoutHandle);
+		document.getElementById("startTimer").disabled = false;
+		document.getElementById("timerTime").value = "";
+		document.getElementById("timerNum").value = "";
+		document.getElementById("timer1").value = "MUNHelper";
+		count = -1;
+		//timeoutHandle =setTimeout(updateTimer, time.getUTCMilliseconds() + 500)
+	}
+	function startCountdown(btnId) {
+		if(count== "-1"){
+			count = document.getElementsByName("numb")[0].value;
+		}
 	
 		countdown("timer1",btnId, 0, document.getElementsByName("time")[0].value);
 	
-	if(document.getElementsByName("time")[0].value != null)
-	{
-		document.getElementById(btnId).disabled  = false;
+		if(document.getElementsByName("time")[0].value != null)
+		{
+			document.getElementById(btnId).disabled  = false;
 		}
 		console.log(document.getElementById(btnId));
-}
+	}
 
 	function countdown( elementName, btnId, minutes, seconds ) {
 	  var element, endTime, hours, mins, msLeft, time;
@@ -59,30 +71,35 @@ function startCountdown(btnId) {
 	    {
 	       return (n <= 9 ? "0" + n : n);
 	    }
+	    function updateTimer()
+    	{
+        	msLeft = endTime - (+new Date);
+        	if ( msLeft < 1000 ) {
+        		element.innerHTML = "0:00";
+            	//document.getElementById(btnId).disabled = false; 
+            	count--;
+            	if(count > 1)
+            		element.innerHTML = count + " Speakers Left"
+            	else if(count == 0){
+            		element.innerHTML = "Reset Timer"
+            		document.getElementById("startTimer").disabled = true;
 
-    function updateTimer()
-    {
-        msLeft = endTime - (+new Date);
-        if(count == 0)
-        {
-        	element.innerHTML = "Done"
-        }
-        else if ( msLeft < 1000 ) {
-        	element.innerHTML = "0:00";
-            document.getElementById(btnId).disabled = false;
-            count--; 
-        } else {
-            time = new Date( msLeft );
-            hours = time.getUTCHours();
-            mins = time.getUTCMinutes();
-             element.innerHTML = (hours ? hours + ':' + twoDigits( mins ) : mins) + ':' + twoDigits( time.getUTCSeconds() );
-            setTimeout( updateTimer, time.getUTCMilliseconds() + 500 );
-        }
-    }
-
-    endTime = (+new Date) + 1000 * (60*minutes + seconds) + 500;
-    updateTimer();
-}
+            		window.clearTimeout(timeoutHandle);
+        	    	//timeoutHandle
+            	}
+            	else
+            		element.innerHTML = count + " Speaker Left"
+        	} else {
+            	time = new Date( msLeft );
+            	hours = time.getUTCHours();
+            	mins = time.getUTCMinutes();
+            	element.innerHTML = (hours ? hours + ':' + twoDigits( mins ) : mins) + ':' + twoDigits( time.getUTCSeconds() );
+        	    timeoutHandle = setTimeout( updateTimer, time.getUTCMilliseconds() + 500 );
+        	}
+    	}
+    	endTime = (+new Date) + 1000 * (60*minutes + seconds) + 500;
+    	updateTimer();
+	}
     var motions = 0
 
 function createField() {
@@ -158,34 +175,21 @@ function createCountry() {
 }
 
 function clearMotions() {
-	var list = document.getElementsByName("motions-list")[0];
-	motions = 0;
-	while (list.firstChild) {
-		list.removeChild(list.firstChild);
+	for(var i = 0; i < 3; i++){
+		document.getElementById("c-mot").value = "";
+		document.getElementById("t-mot").value = "";
+		document.getElementById("s-mot").value = "";
+		document.getElementById("top-mot").value = "";
 	}
-	var listItem = document.createElement("li");
-	var input = document.createElement("input");
-	input.name = "motion0"
-	listItem.className += "list-group-item";
-	input.className += "form-control";
-	input.placeholder = "Poland: 9 min 45 sec, Possible Solutions";
-	listItem.appendChild(input);
-	list.appendChild(listItem);
 }
 
+function pass(){
+	console.log("yay u woooooo");
+}
 function clearCountries() {
-	var list = document.getElementsByName("countries-list")[0];
-	motions = 0;
-	while (list.firstChild) {
-		list.removeChild(list.firstChild);
+	for(var i = 0; i < 3; i++){
+	document.getElementById("cmt0").value = "";
 	}
-	var input = document.createElement("input");
-	input.name = "motion0"
-	listItem.className += "list-group-item";
-	input.className += "form-control";
-	input.placeholder = "Poland";
-	listItem.appendChild(input);
-	list.appendChild(listItem);
 }
 
 $(document).ready(function() {
@@ -219,11 +223,11 @@ $(document).ready(function() {
 			<li class="dropdown">
 			  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" name="acc-drop"><span class="caret"></span></a>
 			  <ul class="dropdown-menu">
-				<li><a href="#">Action</a></li>
-				<li><a href="#">Another action</a></li>
-				<li><a href="#">Something else here</a></li>
+				<li><a href="#">Share This Committee</a></li>
+				<li><a href="#">View All Committees</a></li>
+				<li><a href="#">View Committee Log</a></li>
 				<li role="separator" class="divider"></li>
-				<li><a href="#">Separated link</a></li>
+				<li><a href="#">Log Out</a></li>
 			  </ul>
 			</li>
 		  </ul>
@@ -231,7 +235,7 @@ $(document).ready(function() {
 	  </div><!-- /.container-fluid -->
 	</nav>
 <h2>
-<div id = "timer1"> </div>
+<div id = "timer1">MUNHelper</div>
 </h2>
 <style type="text/css">
 		/* Some custom styles to beautify this example */
@@ -252,15 +256,17 @@ $(document).ready(function() {
 			<div class="col-sm-8">
 				<label for="cmt">Motions:</label>
 				<ul class="list-group" name="motions-list">
-					<li class="list-group-item"><input type="text" class="form-control" id="cmt0" name="motion0" placeholder="Poland: 9 min 45 sec, Possible Solutions"></li>
-					<li class="list-group-item"><input type="text" class="form-control" id="cmt1" name="motion1" placeholder="Poland: 9 min 45 sec, Possible Solutions"></li>
-					<li class="list-group-item"><input type="text" class="form-control" id="cmt2" name="motion2" placeholder="Poland: 9 min 45 sec, Possible Solutions"></li>
+					<li class="list-group-item"><input type="text" class="form-control" id="c-mot" name="motion0" placeholder="Country"><input type="text" class="form-control" id="t-mot" name="motion0" placeholder="Time"><input type="text" class="form-control" id="s-mot" name="motion0" placeholder="# Speakers"><input type="text" class="form-control" id="top-mot" name="motion0" placeholder="Topic"><a class="btn btn-primary" onclick="pass(motion0);" name="create">Pass</a></li>
+					<li class="list-group-item"><input type="text" class="form-control" id="c-mot" name="motion1" placeholder="Country"><input type="text" class="form-control" id="t-mot" name="motion1" placeholder="Time"><input type="text" class="form-control" id="s-mot" name="motion1" placeholder="# Speakers"><input type="text" class="form-control" id="top-mot" name="motion1" placeholder="Topic"></li>
+					<li class="list-group-item"><input type="text" class="form-control" id="c-mot" name="motion2" placeholder="Country"><input type="text" class="form-control" id="t-mot" name="motion2" placeholder="Time"><input type="text" class="form-control" id="s-mot" name="motion2" placeholder="# Speakers"><input type="text" class="form-control" id="top-mot" name="motion2" placeholder="Topic"></li>
 				</ul>
 				<a class="btn btn-primary" onclick="createField();" name="create">Add a Motion</a>
 			<a class="btn btn-primary" onclick="clearMotions();" name="clear">Clear Motions</a><br><br>
 			<br>
 			<label for="cmt">Speakers:</label>
 			<ul class="list-group" name="countries-list">
+				<li class="list-group-item"><input type="text" class="form-control" id="cmt0" name="speaker0" placeholder="Poland"></li>
+				<li class="list-group-item"><input type="text" class="form-control" id="cmt0" name="speaker0" placeholder="Poland"></li>
 				<li class="list-group-item"><input type="text" class="form-control" id="cmt0" name="speaker0" placeholder="Poland"></li>
 			</ul>
 			<br>
@@ -271,12 +277,14 @@ $(document).ready(function() {
 	</div>
 	</div>
 	<div class="col-sm-6">
-		<div class="demo-content bg-alt">
+		<div class="bg-alt">
+		
 			<label for="usr">Speaking Time:</label>
-			<input type="text" class="form-control" id="tim" name="time" placeholder = "(In Seconds)">
+			<input type="text" class="form-control" id="timerTime" name="time" placeholder = "(In Seconds)" selected = "selected">
 			<label for="usr">Number of Speakers:</label>
-			<input type="text" class="form-control" id="num" name="numb" placeholder = "(9/45 = 12 speakers)"><br>
-			<button class="btn btn-primary" id = "button1" onclick="startCountdown('button1');" name="submit">Start</button>
+			<input type="text" class="form-control" id="timerNum" name="numb" placeholder = "(9/45 = 12 speakers)" selected = "selected"><br>
+			<button class="btn btn-primary" id = "startTimer" onclick="startCountdown('button1');" name="submit">Start</button> <button class="btn btn-primary" id = "button2" onclick="reset('button2');" name="submit">Reset</button>
+		
 		</div>
 	</div>
 </div>
