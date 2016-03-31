@@ -38,7 +38,7 @@
 				console.log('Synchronization succeeded');
 			}
 		});
-		var uid = localStorage.getItem("uid");
+		var uid = committeesRef.getAuth().uid//localStorage.getItem("uid");
 		console.log(uid);
 		var obj = {};
 		obj[uid] = true;

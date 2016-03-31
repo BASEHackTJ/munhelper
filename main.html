@@ -24,8 +24,8 @@
 			padding-left: 10%;
 		}
 		h2{
-		text-align: center;
-		font-size: 100px;
+			text-align: center;
+			font-size: 100px;
 
 		}
 	</style>
@@ -36,131 +36,191 @@
 <script>
 var timeoutHandle = null;
 var count = -1;
-	function reset(btnId)
+function reset(btnId)
+{
+	window.clearTimeout(timeoutHandle);
+	document.getElementById("startTimer").disabled = false;
+	document.getElementById("timerTime").value = "";
+	document.getElementById("timerNum").value = "";
+	document.getElementById("timer1").value = "MUNHelper";
+	count = -1;
+	//timeoutHandle =setTimeout(updateTimer, time.getUTCMilliseconds() + 500)
+}
+function startCountdown(btnId) {
+	if(count== "-1"){
+		count = document.getElementsByName("numb")[0].value;
+	}
+
+	countdown("timer1",btnId, 0, document.getElementsByName("time")[0].value);
+
+	if(document.getElementsByName("time")[0].value != null)
 	{
-		window.clearTimeout(timeoutHandle);
-		document.getElementById("startTimer").disabled = false;
-		document.getElementById("timerTime").value = "";
-		document.getElementById("timerNum").value = "";
-		document.getElementById("timer1").value = "MUNHelper";
-		count = -1;
-		//timeoutHandle =setTimeout(updateTimer, time.getUTCMilliseconds() + 500)
+		document.getElementById(btnId).disabled  = false;
 	}
-	function startCountdown(btnId) {
-		if(count== "-1"){
-			count = document.getElementsByName("numb")[0].value;
-		}
-	
-		countdown("timer1",btnId, 0, document.getElementsByName("time")[0].value);
-	
-		if(document.getElementsByName("time")[0].value != null)
-		{
-			document.getElementById(btnId).disabled  = false;
-		}
-		console.log(document.getElementById(btnId));
-	}
+	console.log(document.getElementById(btnId));
+}
 
-	function countdown( elementName, btnId, minutes, seconds ) {
-	  var element, endTime, hours, mins, msLeft, time;
-		console.log("check1");
-	    console.log("elementName = " + elementName);
-	    element = document.getElementById( elementName );
-	    console.log("element = " + element);
-	    console.log("check2");
-	    function twoDigits( n )
-	    {
-	       return (n <= 9 ? "0" + n : n);
-	    }
-	    function updateTimer()
-    	{
-        	msLeft = endTime - (+new Date);
-        	if ( msLeft < 1000 ) {
-        		element.innerHTML = "0:00";
-            	//document.getElementById(btnId).disabled = false; 
-            	count--;
-            	if(count > 1)
-            		element.innerHTML = count + " Speakers Left"
-            	else if(count == 0){
-            		element.innerHTML = "Reset Timer"
-            		document.getElementById("startTimer").disabled = true;
-
-            		window.clearTimeout(timeoutHandle);
-        	    	//timeoutHandle
-            	}
-            	else
-            		element.innerHTML = count + " Speaker Left"
-        	} else {
-            	time = new Date( msLeft );
-            	hours = time.getUTCHours();
-            	mins = time.getUTCMinutes();
-            	element.innerHTML = (hours ? hours + ':' + twoDigits( mins ) : mins) + ':' + twoDigits( time.getUTCSeconds() );
-        	    timeoutHandle = setTimeout( updateTimer, time.getUTCMilliseconds() + 500 );
-        	}
-    	}
-    	endTime = (+new Date) + 1000 * (60*minutes + seconds) + 500;
-    	updateTimer();
+function countdown( elementName, btnId, minutes, seconds ) {
+	var element, endTime, hours, mins, msLeft, time;
+	console.log("check1");
+	console.log("elementName = " + elementName);
+	element = document.getElementById( elementName );
+	console.log("element = " + element);
+	console.log("check2");
+	function twoDigits( n )
+	{
+		return (n <= 9 ? "0" + n : n);
 	}
-    var motions = 0
+	function updateTimer()
+	{
+		msLeft = endTime - (+new Date);
+		if ( msLeft < 1000 ) {
+			element.innerHTML = "0:00";
+         	//document.getElementById(btnId).disabled = false; 
+         	count--;
+         	if(count > 1)
+         		element.innerHTML = count + " Speakers Left"
+         	else if(count == 0){
+         		element.innerHTML = "Reset Timer"
+         		document.getElementById("startTimer").disabled = true;
+
+         		window.clearTimeout(timeoutHandle);
+     	    	//timeoutHandle
+     	    }
+     	    else
+     	    	element.innerHTML = count + " Speaker Left"
+     	 } else {
+     	 	time = new Date( msLeft );
+     	 	hours = time.getUTCHours();
+     	 	mins = time.getUTCMinutes();
+     	 	element.innerHTML = (hours ? hours + ':' + twoDigits( mins ) : mins) + ':' + twoDigits( time.getUTCSeconds() );
+     	 	timeoutHandle = setTimeout( updateTimer, time.getUTCMilliseconds() + 500 );
+     	 }
+     	}
+     	endTime = (+new Date) + 1000 * (60*minutes + seconds) + 500;
+     	updateTimer();
+     }
+
+var motions = 0
+
+function elementValue(name) {
+	return document.getElementsByName(/*"motion" + motions.toString()*/name)[0].value;
+}
 
 function createField() {
 	var firebase = new Firebase("https://munhelper.firebaseio.com/motions/" + localStorage.getItem("committee-name"));
 	var data = {}
-	data[motions] = document.getElementsByName("motion" + motions.toString())[0].value;
+	var motionName = "motion" + motions.toString() // Name string based on current number of motions
+
+	var country = elementValue("c-mot-" + motionName)
+	var time = elementValue("t-mot-" + motionName)
+	var speakers = elementValue("s-mot-" + motionName)
+	var topic = elementValue("top-mot-" + motionName)
+
+	var newMotion = {
+							"country": country,
+							"time": time,
+							"speakers": speakers,
+							"topic": topic
+						}
+
+	data[motions] = newMotion
 	/*firebase.authWithPassword({
-			"email": localStorage.getItem("email"),
-			"password": localStorage.getItem("password")
-		}, function(error, authData) {
-			if (error) {
+	"email": localStorage.getItem("email"),
+	"password": localStorage.getItem("password")
+	}, function(error, authData) {
+	if (error) {
+	console.log("Login Failed!", error);
+	} else {*/
+	//console.log("Authenticated successfully with payload:", authData);
+	/*
+	<li class="list-group-item">
+		<input type="text" class="form-control" id="c-mot" name="c-mot-motion0" placeholder="Country">
+		<input type="text" class="form-control" id="t-mot" name="t-mot-motion0" placeholder="Time">
+		<input type="text" class="form-control" id="s-mot" name="s-mot-motion0" placeholder="# Speakers">
+		<input type="text" class="form-control" id="top-mot" name="top-mot-motion0" placeholder="Topic">
+		<a class="btn btn-primary" onclick="pass(0);" name="pass-motion0">Pass</a>
+	</li>
+	*/
+	firebase.update(data, function(error) {
+		if (error) {
+			console.log('Synchronization failed');
+		} else {
+			console.log('Synchronization succeeded');
+			motions += 1
+			var motionName = "motion" + motions.toString() // Name string based on current number of motions
+			window.alert("Motion added")
+
+			var listItem = document.createElement("li");
+			listItem.className += "list-group-item"
+			/*var input = document.createElement("input")
+			input.className += "form-control";
+			input.type = "text";
+			input.id = "cmt" + motions.toString();
+			input.name = "motion" + motions.toString();*/
+
+			var countryInput = newInput("c-mot", "c-mot-" + motionName, "Country")
+			var timeInput = newInput("t-mot", "t-mot-" + motionName, "Time")
+			var speakersInput = newInput("s-mot", "s-mot-" + motionName, "# Speakers")
+			var topicInput = newInput("top-mot", "top-mot-" + motionName, "Topic")
+
+			//listItem.appendChild(input);
+			listItem.appendChild(countryInput)
+			listItem.appendChild(timeInput)
+			listItem.appendChild(speakersInput)
+			listItem.appendChild(topicInput)
+
+			var passBtn = document.createElement("a")
+			passBtn.className = "btn btn-primary"
+			passBtn.onclick = "pass(" + motions.toString() + ");"
+			passBtn.name = "pass-" + motionName
+			var text = document.createTextNode("Pass")
+			passBtn.appendChild(text)
+
+			listItem.appendChild(passBtn)
+
+			var list = document.getElementsByName("motions-list")[0];
+			list.appendChild(listItem);
+		}
+	});
+	//}
+	//});
+}
+
+function newInput(id, name, placeholder) {
+	var inputElement = document.createElement("input")
+	inputElement.type = "text"
+	inputElement.className += "form-control"
+	inputElement.id = id
+	inputElement.name = name
+	inputElement.placeholder = placeholder
+	return inputElement
+}
+
+var countries = 0;
+function createCountry() {
+	var firebase = new Firebase("https://munhelper.firebaseio.com/motion-speakers/" + localStorage.getItem("committee-name"));
+	var data = {}
+	data[countries] = document.getElementsByName("speaker" + countries.toString())[0].value;
+	firebase.authWithPassword({
+		"email": localStorage.getItem("email"),
+		"password": localStorage.getItem("password")
+	}, function(error, authData) {
+		if (error) {
 			console.log("Login Failed!", error);
-			} else {*/
+		} else {
 			console.log("Authenticated successfully with payload:", authData);
 			firebase.update(data, function(error) {
 				if (error) {
-				console.log('Synchronization failed');
+					console.log('Synchronization failed');
 				} else {
-				console.log('Synchronization succeeded');
-				motions += 1
-				window.alert("Motion added")
+					console.log('Synchronization succeeded');
+					countries += 1
+					window.alert("Speaker added")
 
-				var listItem = document.createElement("li");
-				listItem.className += "list-group-item"
-				var input = document.createElement("input")
-				input.className += "form-control";
-				input.type = "text";
-				input.id = "cmt" + motions.toString();
-				input.name = "motion" + motions.toString();
-				listItem.appendChild(input);
-				var list = document.getElementsByName("motions-list")[0];
-				list.appendChild(listItem);
-				}
-	});
-			//}
-	//});
-}
-var countries = 0;
-function createCountry() {
-		var firebase = new Firebase("https://munhelper.firebaseio.com/motion-speakers/" + localStorage.getItem("committee-name"));
-		var data = {}
-		data[countries] = document.getElementsByName("speaker" + countries.toString())[0].value;
-		firebase.authWithPassword({
-  			"email": localStorage.getItem("email"),
-  			"password": localStorage.getItem("password")
-			}, function(error, authData) {
-  			if (error) {
-    			console.log("Login Failed!", error);
-  			} else {
-    			console.log("Authenticated successfully with payload:", authData);
-    			firebase.update(data, function(error) {
-  				if (error) {
-    				console.log('Synchronization failed');
-  				} else {
-    				console.log('Synchronization succeeded');
-    				countries += 1
-    				window.alert("Speaker added")
-
-    				var listItem = document.createElement("li");
-    				listItem.className += "list-group-item"
-    				var input = document.createElement("input")
+					var listItem = document.createElement("li");
+					listItem.className += "list-group-item"
+					var input = document.createElement("input")
 					input.className += "form-control";
 					input.type = "text";
 					input.id = "cmt" + countries.toString();
@@ -168,10 +228,10 @@ function createCountry() {
 					listItem.appendChild(input);
 					var list = document.getElementsByName("countries-list")[0];
 					list.appendChild(listItem);
-  				}
-		});
-  			}
-		});
+				}
+			});
+		}
+	});
 }
 
 function clearMotions() {
@@ -183,12 +243,13 @@ function clearMotions() {
 	}
 }
 
-function pass(){
-	console.log("yay u woooooo");
+function pass(motionNumber){
+	console.log("yay u woooooo")
+	console.log("passing", motionNumber.toString())
 }
 function clearCountries() {
 	for(var i = 0; i < 3; i++){
-	document.getElementById("cmt0").value = "";
+		document.getElementById("cmt0").value = "";
 	}
 }
 
@@ -202,89 +263,113 @@ $(document).ready(function() {
 });
 </script>
 <nav class="navbar navbar-default">
-	  <div class="container-fluid">
+	<div class="container-fluid">
 		<!-- Brand and toggle get grouped for better mobile display -->
 		<div class="navbar-header">
-		  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-			<span class="sr-only">Toggle navigation</span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-		  </button>
-		  <a class="navbar-brand" href="index.html">MUN Helper</a>
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="index.html">MUN Helper</a>
 		</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-		  <ul class="nav navbar-nav">
-			<li class="inactive"><a href="committees.html">Committees<span class="sr-only">(current)</span></a></li>
-		  </ul>
-		  <ul class="nav navbar-nav navbar-right">
-			<li class="dropdown">
-			  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" name="acc-drop"><span class="caret"></span></a>
-			  <ul class="dropdown-menu">
-				<li><a href="#">Share This Committee</a></li>
-				<li><a href="#">View All Committees</a></li>
-				<li><a href="#">View Committee Log</a></li>
-				<li role="separator" class="divider"></li>
-				<li><a href="#">Log Out</a></li>
-			  </ul>
-			</li>
-		  </ul>
+			<ul class="nav navbar-nav">
+				<li class="inactive"><a href="committees.html">Committees<span class="sr-only">(current)</span></a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" name="acc-drop"><span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="#">Share This Committee</a></li>
+						<li><a href="#">View All Committees</a></li>
+						<li><a href="#">View Committee Log</a></li>
+						<li role="separator" class="divider"></li>
+						<li><a href="#">Log Out</a></li>
+					</ul>
+				</li>
+			</ul>
 		</div><!-- /.navbar-collapse -->
-	  </div><!-- /.container-fluid -->
-	</nav>
+	</div><!-- /.container-fluid -->
+</nav>
 <h2>
-<div id = "timer1">MUNHelper</div>
+	<div id = "timer1">MUNHelper</div>
 </h2>
 <style type="text/css">
-		/* Some custom styles to beautify this example */
-		.demo-content{
-			padding: 15px;
-			font-size: 18px;
-			min-height: 300px;
-			/*background: #dbdfe5;*/
-			margin-bottom: 10px;
-		}
-		.demo-content.bg-alt{
-			/*background: #abb1b8;*/
-		}
-	</style>
+	/* Some custom styles to beautify this example */
+	.demo-content{
+		padding: 15px;
+		font-size: 18px;
+		min-height: 300px;
+		/*background: #dbdfe5;*/
+		margin-bottom: 10px;
+	}
+	.demo-content.bg-alt{
+		/*background: #abb1b8;*/
+	}
+</style>
 <div class="row">
 	<div class="col-sm-6">
 		<div class="demo-content">
 			<div class="col-sm-8">
 				<label for="cmt">Motions:</label>
 				<ul class="list-group" name="motions-list">
-					<li class="list-group-item"><input type="text" class="form-control" id="c-mot" name="motion0" placeholder="Country"><input type="text" class="form-control" id="t-mot" name="motion0" placeholder="Time"><input type="text" class="form-control" id="s-mot" name="motion0" placeholder="# Speakers"><input type="text" class="form-control" id="top-mot" name="motion0" placeholder="Topic"><a class="btn btn-primary" onclick="pass(motion0);" name="create">Pass</a></li>
-					<li class="list-group-item"><input type="text" class="form-control" id="c-mot" name="motion1" placeholder="Country"><input type="text" class="form-control" id="t-mot" name="motion1" placeholder="Time"><input type="text" class="form-control" id="s-mot" name="motion1" placeholder="# Speakers"><input type="text" class="form-control" id="top-mot" name="motion1" placeholder="Topic"></li>
-					<li class="list-group-item"><input type="text" class="form-control" id="c-mot" name="motion2" placeholder="Country"><input type="text" class="form-control" id="t-mot" name="motion2" placeholder="Time"><input type="text" class="form-control" id="s-mot" name="motion2" placeholder="# Speakers"><input type="text" class="form-control" id="top-mot" name="motion2" placeholder="Topic"></li>
+					<li class="list-group-item">
+						<input type="text" class="form-control" id="c-mot" name="c-mot-motion0" placeholder="Country">
+						<input type="text" class="form-control" id="t-mot" name="t-mot-motion0" placeholder="Time">
+						<input type="text" class="form-control" id="s-mot" name="s-mot-motion0" placeholder="# Speakers">
+						<input type="text" class="form-control" id="top-mot" name="top-mot-motion0" placeholder="Topic">
+						<a class="btn btn-primary" onclick="pass(0);" name="pass-motion0">Pass</a>
+					</li>
+					<li class="list-group-item">
+						<input type="text" class="form-control" id="c-mot" name="c-mot-motion1" placeholder="Country">
+						<input type="text" class="form-control" id="t-mot" name="t-mot-motion1" placeholder="Time">
+						<input type="text" class="form-control" id="s-mot" name="s-mot-motion1" placeholder="# Speakers">
+						<input type="text" class="form-control" id="top-mot" name="top-mot-motion1" placeholder="Topic">
+						<a class="btn btn-primary" onclick="pass(1);" name="pass-motion1">Pass</a>
+					</li>
+					<li class="list-group-item">
+						<input type="text" class="form-control" id="c-mot" name="c-mot-motion2" placeholder="Country">
+						<input type="text" class="form-control" id="t-mot" name="t-mot-motion2" placeholder="Time">
+						<input type="text" class="form-control" id="s-mot" name="s-mot-motion2" placeholder="# Speakers">
+						<input type="text" class="form-control" id="top-mot" name="top-mot-motion2" placeholder="Topic">
+						<a class="btn btn-primary" onclick="pass(2);" name="pass-motion2">Pass</a>
+					</li>
 				</ul>
 				<a class="btn btn-primary" onclick="createField();" name="create">Add a Motion</a>
-			<a class="btn btn-primary" onclick="clearMotions();" name="clear">Clear Motions</a><br><br>
-			<br>
-			<label for="cmt">Speakers:</label>
-			<ul class="list-group" name="countries-list">
-				<li class="list-group-item"><input type="text" class="form-control" id="cmt0" name="speaker0" placeholder="Poland"></li>
-				<li class="list-group-item"><input type="text" class="form-control" id="cmt0" name="speaker0" placeholder="Poland"></li>
-				<li class="list-group-item"><input type="text" class="form-control" id="cmt0" name="speaker0" placeholder="Poland"></li>
-			</ul>
-			<br>
-			<a class="btn btn-primary" onclick="createCountry();" name="create">Add a Country</a>
-			<a class="btn btn-primary" onclick="clearCountries();" name="clear">Clear Countries</a><br><br>
+				<a class="btn btn-primary" onclick="clearMotions();" name="clear">Clear Motions</a><br><br>
+				<br>
+				<label for="cmt">Speakers:</label>
+				<ul class="list-group" name="countries-list">
+					<li class="list-group-item">
+						<input type="text" class="form-control" id="cmt0" name="speaker0" placeholder="Poland">
+					</li>
+					<li class="list-group-item">
+						<input type="text" class="form-control" id="cmt0" name="speaker0" placeholder="Poland">
+					</li>
+					<li class="list-group-item">
+						<input type="text" class="form-control" id="cmt0" name="speaker0" placeholder="Poland">
+					</li>
+				</ul>
+				<br>
+				<a class="btn btn-primary" onclick="createCountry();" name="create">Add a Country</a>
+				<a class="btn btn-primary" onclick="clearCountries();" name="clear">Clear Countries</a><br><br>
+			</div>
+			<br>			
 		</div>
-		<br>			
-	</div>
 	</div>
 	<div class="col-sm-6">
 		<div class="bg-alt">
-		
+
 			<label for="usr">Speaking Time:</label>
 			<input type="text" class="form-control" id="timerTime" name="time" placeholder = "(In Seconds)" selected = "selected">
 			<label for="usr">Number of Speakers:</label>
 			<input type="text" class="form-control" id="timerNum" name="numb" placeholder = "(9/45 = 12 speakers)" selected = "selected"><br>
 			<button class="btn btn-primary" id = "startTimer" onclick="startCountdown('button1');" name="submit">Start</button> <button class="btn btn-primary" id = "button2" onclick="reset('button2');" name="submit">Reset</button>
-		
+
 		</div>
 	</div>
 </div>
