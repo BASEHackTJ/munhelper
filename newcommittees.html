@@ -28,18 +28,18 @@
 		var input = document.getElementsByName("committee")[0].value;
 		localStorage.setItem("committee-name", input);
 		var committeesRef = new Firebase("https://munhelper.firebaseio.com/committees/" + input + "/users/");
-		var committeNames = new Firebase("https://munhelper.firebaseio.com/committee-names");
+		var committeeNames = new Firebase("https://munhelper.firebaseio.com/committee-names");
 		var newName = {};
 		newName[input] = input;
-		committeNames.update(newName, function(error) {
+		committeeNames.update(newName, function(error) {
 			if (error) {
 				console.log('Synchronization failed');
 			} else {
 				console.log('Synchronization succeeded');
 			}
 		});
-		var uid = localStorage.getItem("uid")
-		console.log(uid)
+		var uid = committeesRef.getAuth().uid//localStorage.getItem("uid");
+		console.log(uid);
 		var obj = {};
 		obj[uid] = true;
 		var toInvite = document.getElementsByName("cochairs")[0].value.split(", ");
