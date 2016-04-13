@@ -135,7 +135,7 @@ function createField() {
 		if (error) {
 			console.log('Synchronization failed');
 		} else {*/
-			console.log('Synchronization succeeded');
+			//console.log('Synchronization succeeded');
 			motions += 1
 			var motionName = "motion" + motions.toString() // Name string based on current number of motions
 			console.log("Motion added")
@@ -190,7 +190,10 @@ var countries = 0;
 function createCountry() {
 	var firebase = new Firebase("https://munhelper.firebaseio.com/motion-speakers/" + localStorage.getItem("committee-name"));
 	var data = {}
-	data[countries] = document.getElementsByName("speaker" + countries.toString())[0].value;
+	console.log("creating. countries: ", countries)
+	if (countries >= 0) {
+		data[countries] = document.getElementsByName("speaker" + countries.toString())[0].value;
+	}
 	/*firebase.authWithPassword({
 		"email": localStorage.getItem("email"),
 		"password": localStorage.getItem("password")
@@ -209,6 +212,7 @@ function createCountry() {
 			var listItem = document.createElement("li");
 			listItem.className += "list-group-item"
 			listItem.name = "li" + countries.toString();
+			console.log("listitem name: ", listItem.name)
 			var input = document.createElement("input")
 			input.className += "form-control";
 			input.type = "text";
@@ -231,9 +235,8 @@ function clearMotions() {
 		document.getElementsByName("top-mot-motion" + x)[0].value = "";
 	}
 }
-
-function pass(motionNumber){
-	console.log("yay u woooooo")
+var triggeredByFirebase = false
+function pass(motionNumber) {
 	console.log("passing", motionNumber)
 	country = document.getElementsByName("c-mot-motion" + motionNumber.toString())[0].value
 	time = document.getElementsByName("t-mot-motion" + motionNumber.toString())[0].value
@@ -241,30 +244,33 @@ function pass(motionNumber){
 	topic = document.getElementsByName("top-mot-motion" + motionNumber.toString())[0].value
 
 	// Update motion
+	if (!triggeredByFirebase) {
+		var firebase = new Firebase("https://munhelper.firebaseio.com/motions/" + localStorage.getItem("committee-name"));
+		var data = {}
+		var newMotion = {
+								"country": country,
+								"time": time,
+								"speakers": speakers,
+								"topic": topic
+							}
 
-	var firebase = new Firebase("https://munhelper.firebaseio.com/motions/" + localStorage.getItem("committee-name"));
-	var data = {}
-	var newMotion = {
-							"country": country,
-							"time": time,
-							"speakers": speakers,
-							"topic": topic
-						}
-
-	data[motions] = newMotion
-	firebase.update(data, function(error) {
-		if (error) {
-		console.log('Synchronization failed');
-		} else {
-			console.log('Synchronization succeeded');
-			console.log("Motion added")
-		}
-	});
+		data[motionNumber] = newMotion
+		firebase.set(data, function(error) {
+			if (error) {
+			console.log('Synchronization failed');
+			} else {
+				console.log('Synchronization succeeded');
+				console.log("Motion added")
+			}
+		});
+	}
 
 	// Place values in text boxes
 	var countryBox = document.getElementsByName("speaker" + countries)[0]
 	countryBox.value = country
-	createCountry();
+	if (!triggeredByFirebase) {
+		createCountry();
+	}
 
 	document.getElementById("timerTime").value = time
 	document.getElementById("timerNum").value = speakers
@@ -272,11 +278,10 @@ function pass(motionNumber){
 }
 function clearCountries() {
 	var parent = document.getElementsByName("countries-list")[0]
-	for(var i = 0; i < countries; i++){
-		var child = document.getElementsByName("li" + i)[0]
-		parent.removeChild(child)
-	}
-	countries = 0
+	parent.innerHTML = ''; // Removes all children
+	countries = -1;
+	console.log("cleared", countries)
+	createCountry();
 }
 
 $(document).ready(function() {
@@ -286,6 +291,31 @@ $(document).ready(function() {
 		name = "Account"
 	};
 	dropdown.appendChild(document.createTextNode(" " + name));
+
+	// Populate text fields with data from server
+	var firebase = new Firebase("https://munhelper.firebaseio.com/motions/" + localStorage.getItem("committee-name"));
+	var element = document.getElementsByName("committee-list")[0];
+	firebase.on("value", function(snapshot) {
+		console.log("loaded")
+		clearMotions();
+		clearCountries();
+		snapshot.forEach(function(data) {
+			console.log(data.key());
+			var motionName = "motion" + data.key().toString() // Name string based on current number of motions
+			var dict = data.val()
+
+			document.getElementsByName("c-mot-" + motionName)[0].value = dict["country"];
+			document.getElementsByName("t-mot-" + motionName)[0].value = dict["speakers"];
+			document.getElementsByName("s-mot-" + motionName)[0].value = dict["time"];
+			document.getElementsByName("top-mot-" + motionName)[0].value = dict["topic"];
+
+			if (dict["country"] != "" && dict["speakers"] != "" && dict["time"] != "" && dict["topic"] != "") {
+				triggeredByFirebase = true;
+				pass(parseInt(data.key()));
+				triggeredByFirebase = false;
+			}
+		});
+	});
 });
 </script>
 <nav class="navbar navbar-default">
