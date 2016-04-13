@@ -101,47 +101,20 @@ function countdown( elementName, btnId, minutes, seconds ) {
      	updateTimer();
      }
 
-var motions = 0
+var motions = 2
 
 function elementValue(name) {
 	return document.getElementsByName(/*"motion" + motions.toString()*/name)[0].value;
 }
 
 function createField() {
-	var firebase = new Firebase("https://munhelper.firebaseio.com/motions/" + localStorage.getItem("committee-name"));
-	var data = {}
 	var motionName = "motion" + motions.toString() // Name string based on current number of motions
 
 	var country = elementValue("c-mot-" + motionName)
 	var time = elementValue("t-mot-" + motionName)
 	var speakers = elementValue("s-mot-" + motionName)
 	var topic = elementValue("top-mot-" + motionName)
-
-	var newMotion = {
-							"country": country,
-							"time": time,
-							"speakers": speakers,
-							"topic": topic
-						}
-
-	data[motions] = newMotion
-	/*firebase.authWithPassword({
-<<<<<<< HEAD
-			"email": localStorage.getItem("email"),
-			"password": localStorage.getItem("password")
-		}, function(error, authData) {
-			if (error) {
-			console.log("Login Failed!", error);
-			} else {*/
-			//console.log("Authenticated successfully with payload:", authData);
-			firebase.update(data, function(error) {
-				if (error) {
-				console.log('Synchronization failed');
-				} else {
-				console.log('Synchronization succeeded');
-				motions += 1
-				window.alert("Motion added")
-=======
+/*
 	"email": localStorage.getItem("email"),
 	"password": localStorage.getItem("password")
 	}, function(error, authData) {
@@ -158,15 +131,14 @@ function createField() {
 		<a class="btn btn-primary" onclick="pass(0);" name="pass-motion0">Pass</a>
 	</li>
 	*/
-	firebase.update(data, function(error) {
+	/*firebase.update(data, function(error) {
 		if (error) {
 			console.log('Synchronization failed');
-		} else {
+		} else {*/
 			console.log('Synchronization succeeded');
 			motions += 1
 			var motionName = "motion" + motions.toString() // Name string based on current number of motions
-			window.alert("Motion added")
->>>>>>> 96423f96a3a7f3f77fa4a3091797717920524940
+			console.log("Motion added")
 
 			var listItem = document.createElement("li");
 			listItem.className += "list-group-item"
@@ -177,7 +149,7 @@ function createField() {
 			input.name = "motion" + motions.toString();*/
 
 			var countryInput = newInput("c-mot", "c-mot-" + motionName, "Country")
-			var timeInput = newInput("t-mot", "t-mot-" + motionName, "Time")
+			var timeInput = newInput("t-mot", "t-mot-" + motionName, "Time (Seconds)")
 			var speakersInput = newInput("s-mot", "s-mot-" + motionName, "# Speakers")
 			var topicInput = newInput("top-mot", "top-mot-" + motionName, "Topic")
 
@@ -189,7 +161,7 @@ function createField() {
 
 			var passBtn = document.createElement("a")
 			passBtn.className = "btn btn-primary"
-			passBtn.onclick = "pass(" + motions.toString() + ");"
+			passBtn.onclick = "pass(" + motions + ");"
 			passBtn.name = "pass-" + motionName
 			var text = document.createTextNode("Pass")
 			passBtn.appendChild(text)
@@ -198,8 +170,8 @@ function createField() {
 
 			var list = document.getElementsByName("motions-list")[0];
 			list.appendChild(listItem);
-		}
-	});
+		//}
+	//});
 	//}
 	//});
 }
@@ -219,55 +191,92 @@ function createCountry() {
 	var firebase = new Firebase("https://munhelper.firebaseio.com/motion-speakers/" + localStorage.getItem("committee-name"));
 	var data = {}
 	data[countries] = document.getElementsByName("speaker" + countries.toString())[0].value;
-	firebase.authWithPassword({
+	/*firebase.authWithPassword({
 		"email": localStorage.getItem("email"),
 		"password": localStorage.getItem("password")
 	}, function(error, authData) {
 		if (error) {
 			console.log("Login Failed!", error);
+		} else {*/
+	firebase.update(data, function(error) {
+		if (error) {
+			console.log('Synchronization failed');
 		} else {
-			console.log("Authenticated successfully with payload:", authData);
-			firebase.update(data, function(error) {
-				if (error) {
-					console.log('Synchronization failed');
-				} else {
-					console.log('Synchronization succeeded');
-					countries += 1
-					window.alert("Speaker added")
+			console.log('Synchronization succeeded');
+			countries += 1
+			console.log("Speaker added")
 
-					var listItem = document.createElement("li");
-					listItem.className += "list-group-item"
-					var input = document.createElement("input")
-					input.className += "form-control";
-					input.type = "text";
-					input.id = "cmt" + countries.toString();
-					input.name = "speaker" + countries.toString();
-					listItem.appendChild(input);
-					var list = document.getElementsByName("countries-list")[0];
-					list.appendChild(listItem);
-				}
-			});
+			var listItem = document.createElement("li");
+			listItem.className += "list-group-item"
+			listItem.name = "li" + countries.toString();
+			var input = document.createElement("input")
+			input.className += "form-control";
+			input.type = "text";
+			input.id = "cmt" + countries.toString();
+			input.name = "speaker" + countries.toString();
+			listItem.appendChild(input);
+			var list = document.getElementsByName("countries-list")[0];
+			list.appendChild(listItem);
 		}
 	});
+		//}
+	//});
 }
 
 function clearMotions() {
-	for(var i = 0; i < 3; i++){
-		document.getElementById("c-mot").value = "";
-		document.getElementById("t-mot").value = "";
-		document.getElementById("s-mot").value = "";
-		document.getElementById("top-mot").value = "";
+	for(var x = 0; x < 3; x++){
+		document.getElementsByName("c-mot-motion" + x)[0].value = "";
+		document.getElementsByName("t-mot-motion" + x)[0].value = "";
+		document.getElementsByName("s-mot-motion" + x)[0].value = "";
+		document.getElementsByName("top-mot-motion" + x)[0].value = "";
 	}
 }
 
 function pass(motionNumber){
 	console.log("yay u woooooo")
-	console.log("passing", motionNumber.toString())
+	console.log("passing", motionNumber)
+	country = document.getElementsByName("c-mot-motion" + motionNumber.toString())[0].value
+	time = document.getElementsByName("t-mot-motion" + motionNumber.toString())[0].value
+	speakers = document.getElementsByName("s-mot-motion" + motionNumber.toString())[0].value
+	topic = document.getElementsByName("top-mot-motion" + motionNumber.toString())[0].value
+
+	// Update motion
+
+	var firebase = new Firebase("https://munhelper.firebaseio.com/motions/" + localStorage.getItem("committee-name"));
+	var data = {}
+	var newMotion = {
+							"country": country,
+							"time": time,
+							"speakers": speakers,
+							"topic": topic
+						}
+
+	data[motions] = newMotion
+	firebase.update(data, function(error) {
+		if (error) {
+		console.log('Synchronization failed');
+		} else {
+			console.log('Synchronization succeeded');
+			console.log("Motion added")
+		}
+	});
+
+	// Place values in text boxes
+	var countryBox = document.getElementsByName("speaker" + countries)[0]
+	countryBox.value = country
+	createCountry();
+
+	document.getElementById("timerTime").value = time
+	document.getElementById("timerNum").value = speakers
+	console.log("topic: " + topic)
 }
 function clearCountries() {
-	for(var i = 0; i < 3; i++){
-		document.getElementById("cmt0").value = "";
+	var parent = document.getElementsByName("countries-list")[0]
+	for(var i = 0; i < countries; i++){
+		var child = document.getElementsByName("li" + i)[0]
+		parent.removeChild(child)
 	}
+	countries = 0
 }
 
 $(document).ready(function() {
@@ -336,21 +345,21 @@ $(document).ready(function() {
 				<ul class="list-group" name="motions-list">
 					<li class="list-group-item">
 						<input type="text" class="form-control" id="c-mot" name="c-mot-motion0" placeholder="Country">
-						<input type="text" class="form-control" id="t-mot" name="t-mot-motion0" placeholder="Time">
+						<input type="text" class="form-control" id="t-mot" name="t-mot-motion0" placeholder="Time (Seconds)">
 						<input type="text" class="form-control" id="s-mot" name="s-mot-motion0" placeholder="# Speakers">
 						<input type="text" class="form-control" id="top-mot" name="top-mot-motion0" placeholder="Topic">
 						<a class="btn btn-primary" onclick="pass(0);" name="pass-motion0">Pass</a>
 					</li>
 					<li class="list-group-item">
 						<input type="text" class="form-control" id="c-mot" name="c-mot-motion1" placeholder="Country">
-						<input type="text" class="form-control" id="t-mot" name="t-mot-motion1" placeholder="Time">
+						<input type="text" class="form-control" id="t-mot" name="t-mot-motion1" placeholder="Time (Seconds)">
 						<input type="text" class="form-control" id="s-mot" name="s-mot-motion1" placeholder="# Speakers">
 						<input type="text" class="form-control" id="top-mot" name="top-mot-motion1" placeholder="Topic">
 						<a class="btn btn-primary" onclick="pass(1);" name="pass-motion1">Pass</a>
 					</li>
 					<li class="list-group-item">
 						<input type="text" class="form-control" id="c-mot" name="c-mot-motion2" placeholder="Country">
-						<input type="text" class="form-control" id="t-mot" name="t-mot-motion2" placeholder="Time">
+						<input type="text" class="form-control" id="t-mot" name="t-mot-motion2" placeholder="Time (Seconds)">
 						<input type="text" class="form-control" id="s-mot" name="s-mot-motion2" placeholder="# Speakers">
 						<input type="text" class="form-control" id="top-mot" name="top-mot-motion2" placeholder="Topic">
 						<a class="btn btn-primary" onclick="pass(2);" name="pass-motion2">Pass</a>
@@ -361,15 +370,15 @@ $(document).ready(function() {
 				<br>
 				<label for="cmt">Speakers:</label>
 				<ul class="list-group" name="countries-list">
-					<li class="list-group-item">
+					<li class="list-group-item" name="li0">
+						<input type="text" class="form-control" id="cmt0" name="speaker0" placeholder="Poland">
+					</li>
+					<!--<li class="list-group-item">
 						<input type="text" class="form-control" id="cmt0" name="speaker0" placeholder="Poland">
 					</li>
 					<li class="list-group-item">
 						<input type="text" class="form-control" id="cmt0" name="speaker0" placeholder="Poland">
-					</li>
-					<li class="list-group-item">
-						<input type="text" class="form-control" id="cmt0" name="speaker0" placeholder="Poland">
-					</li>
+					</li>-->
 				</ul>
 				<br>
 				<a class="btn btn-primary" onclick="createCountry();" name="create">Add a Country</a>
