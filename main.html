@@ -19,14 +19,17 @@
 			position: relative;
 			padding-right: 10%;
 		}
-		.align_left{
+		.align_left {
 			position: relative;
 			padding-left: 10%;
 		}
-		h2{
+		h1{
 			text-align: center;
-			font-size: 100px;
+			font-size: 8em;
+		}
 
+		body {
+			background-color: rgb(91, 146, 229);
 		}
 	</style>
 
@@ -42,7 +45,7 @@ function reset(btnId)
 	document.getElementById("startTimer").disabled = false;
 	document.getElementById("timerTime").value = "";
 	document.getElementById("timerNum").value = "";
-	document.getElementById("timer1").value = "MUNHelper";
+	document.getElementById("timer1").value = "TJMUNHelper";
 	count = -1;
 	//timeoutHandle =setTimeout(updateTimer, time.getUTCMilliseconds() + 500)
 }
@@ -126,7 +129,7 @@ function createField() {
 	<li class="list-group-item">
 		<input type="text" class="form-control" id="c-mot" name="c-mot-motion0" placeholder="Country">
 		<input type="text" class="form-control" id="t-mot" name="t-mot-motion0" placeholder="Time">
-		<input type="text" class="form-control" id="s-mot" name="s-mot-motion0" placeholder="# Speakers">
+		<input type="text" class="form-control" id="s-mot" name="s-mot-motion0" placeholder="Total Time">
 		<input type="text" class="form-control" id="top-mot" name="top-mot-motion0" placeholder="Topic">
 		<a class="btn btn-primary" onclick="pass(0);" name="pass-motion0">Pass</a>
 	</li>
@@ -150,7 +153,7 @@ function createField() {
 
 			var countryInput = newInput("c-mot", "c-mot-" + motionName, "Country")
 			var timeInput = newInput("t-mot", "t-mot-" + motionName, "Time (Seconds)")
-			var speakersInput = newInput("s-mot", "s-mot-" + motionName, "# Speakers")
+			var speakersInput = newInput("s-mot", "s-mot-" + motionName, "Total Time")
 			var topicInput = newInput("top-mot", "top-mot-" + motionName, "Topic")
 
 			//listItem.appendChild(input);
@@ -273,9 +276,15 @@ function pass(motionNumber) {
 	}
 
 	document.getElementById("timerTime").value = time
-	document.getElementById("timerNum").value = speakers
+	document.getElementById("timerNum").value = seconds(speakers) / time
 	console.log("topic: " + topic)
 }
+
+function seconds(formatTime) {
+	var items = formatTime.split(":")
+	return parseInt(items[0]) * 60 + parseInt(items[1])
+}
+
 function clearCountries() {
 	var parent = document.getElementsByName("countries-list")[0]
 	parent.innerHTML = ''; // Removes all children
@@ -286,7 +295,7 @@ function clearCountries() {
 
 $(document).ready(function() {
 	var dropdown = document.getElementsByName("acc-drop")[0];
-	var name = localStorage.getItem("email")
+	var name = localStorage.getItem("email");
 	if (name == null || name.length == 0) {
 		name = "Account"
 	};
@@ -305,8 +314,8 @@ $(document).ready(function() {
 			var dict = data.val()
 
 			document.getElementsByName("c-mot-" + motionName)[0].value = dict["country"];
-			document.getElementsByName("t-mot-" + motionName)[0].value = dict["speakers"];
-			document.getElementsByName("s-mot-" + motionName)[0].value = dict["time"];
+			document.getElementsByName("t-mot-" + motionName)[0].value = dict["time"];
+			document.getElementsByName("s-mot-" + motionName)[0].value = dict["speakers"];
 			document.getElementsByName("top-mot-" + motionName)[0].value = dict["topic"];
 
 			if (dict["country"] != "" && dict["speakers"] != "" && dict["time"] != "" && dict["topic"] != "") {
@@ -351,9 +360,9 @@ $(document).ready(function() {
 		</div><!-- /.navbar-collapse -->
 	</div><!-- /.container-fluid -->
 </nav>
-<h2>
-	<div id = "timer1">MUNHelper</div>
-</h2>
+<h1>
+	<div id = "timer1">TJMUNHelper</div>
+</h1>
 <style type="text/css">
 	/* Some custom styles to beautify this example */
 	.demo-content{
@@ -376,21 +385,21 @@ $(document).ready(function() {
 					<li class="list-group-item">
 						<input type="text" class="form-control" id="c-mot" name="c-mot-motion0" placeholder="Country">
 						<input type="text" class="form-control" id="t-mot" name="t-mot-motion0" placeholder="Time (Seconds)">
-						<input type="text" class="form-control" id="s-mot" name="s-mot-motion0" placeholder="# Speakers">
+						<input type="text" class="form-control" id="s-mot" name="s-mot-motion0" placeholder="Total Time">
 						<input type="text" class="form-control" id="top-mot" name="top-mot-motion0" placeholder="Topic">
 						<a class="btn btn-primary" onclick="pass(0);" name="pass-motion0">Pass</a>
 					</li>
 					<li class="list-group-item">
 						<input type="text" class="form-control" id="c-mot" name="c-mot-motion1" placeholder="Country">
 						<input type="text" class="form-control" id="t-mot" name="t-mot-motion1" placeholder="Time (Seconds)">
-						<input type="text" class="form-control" id="s-mot" name="s-mot-motion1" placeholder="# Speakers">
+						<input type="text" class="form-control" id="s-mot" name="s-mot-motion1" placeholder="Total Time">
 						<input type="text" class="form-control" id="top-mot" name="top-mot-motion1" placeholder="Topic">
 						<a class="btn btn-primary" onclick="pass(1);" name="pass-motion1">Pass</a>
 					</li>
 					<li class="list-group-item">
 						<input type="text" class="form-control" id="c-mot" name="c-mot-motion2" placeholder="Country">
 						<input type="text" class="form-control" id="t-mot" name="t-mot-motion2" placeholder="Time (Seconds)">
-						<input type="text" class="form-control" id="s-mot" name="s-mot-motion2" placeholder="# Speakers">
+						<input type="text" class="form-control" id="s-mot" name="s-mot-motion2" placeholder="Total Time">
 						<input type="text" class="form-control" id="top-mot" name="top-mot-motion2" placeholder="Topic">
 						<a class="btn btn-primary" onclick="pass(2);" name="pass-motion2">Pass</a>
 					</li>
