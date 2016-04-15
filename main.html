@@ -397,22 +397,6 @@ $(document).ready(function() {
 				</ul>
 				<a class="btn btn-primary" onclick="createField();" name="create">Add a Motion</a>
 				<a class="btn btn-primary" onclick="clearMotions();" name="clear">Clear Motions</a><br><br>
-				<br>
-				<label for="cmt">Speakers:</label>
-				<ul class="list-group" name="countries-list">
-					<li class="list-group-item" name="li0">
-						<input type="text" class="form-control" id="cmt0" name="speaker0" placeholder="Poland">
-					</li>
-					<!--<li class="list-group-item">
-						<input type="text" class="form-control" id="cmt0" name="speaker0" placeholder="Poland">
-					</li>
-					<li class="list-group-item">
-						<input type="text" class="form-control" id="cmt0" name="speaker0" placeholder="Poland">
-					</li>-->
-				</ul>
-				<br>
-				<a class="btn btn-primary" onclick="createCountry();" name="create">Add a Country</a>
-				<a class="btn btn-primary" onclick="clearCountries();" name="clear">Clear Countries</a><br><br>
 			</div>
 			<br>			
 		</div>
@@ -425,7 +409,24 @@ $(document).ready(function() {
 			<label for="usr">Number of Speakers:</label>
 			<input type="text" class="form-control" id="timerNum" name="numb" placeholder = "(9/45 = 12 speakers)" selected = "selected"><br>
 			<button class="btn btn-primary" id = "startTimer" onclick="startCountdown('button1');" name="submit">Start</button> <button class="btn btn-primary" id = "button2" onclick="reset('button2');" name="submit">Reset</button>
+			<br>
+			<br>
 
+			<label for="cmt">Speakers:</label>
+			<ul class="list-group" name="countries-list">
+				<li class="list-group-item" name="li0">
+					<input type="text" class="form-control" id="cmt0" name="speaker0" placeholder="Poland">
+				</li>
+				<!--<li class="list-group-item">
+					<input type="text" class="form-control" id="cmt0" name="speaker0" placeholder="Poland">
+				</li>
+				<li class="list-group-item">
+					<input type="text" class="form-control" id="cmt0" name="speaker0" placeholder="Poland">
+				</li>-->
+			</ul>
+			<br>
+				<a class="btn btn-primary" onclick="createCountry();" name="create">Add a Country</a>
+				<a class="btn btn-primary" onclick="clearCountries();" name="clear">Clear Countries</a><br><br>
 		</div>
 	</div>
 </div>
